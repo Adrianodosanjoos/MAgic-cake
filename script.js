@@ -82,7 +82,7 @@ function updateCartModal(){
              <p class="font-medium mt-2">R$ ${item.price.toFixed(2)} </p>
        </div>
           
-               <button> 
+               <button class="remove-from-btn" data-name="${item.name}"> 
                Remover
              </button> 
           
@@ -100,4 +100,87 @@ function updateCartModal(){
         currency: "EUR"
     });
 
+    cartCounter.innerHTML = cart.length;
+
+}
+
+// Função para remover o item do carrinho
+
+cartItemsContainer.addEventListener("click", function (event){
+    if(event.target.classList.contains("remove-from-btn")) {
+        const name = event.target.getAttribute("data-name")
+
+       removeItemCart(name);
+    }
+})
+
+function removeItemCart(name){
+    const index = cart.findIndex(item => item.name === name);
+
+    if(index !== -1) {
+        const item = cart[index];
+        if(item.quantity > 1) {
+            item.quantity -=1;
+            updateCartModal();
+            return;
+        }
+
+        cart.splice(index, 1);
+        updateCartModal();
+    }
+}
+
+addressInput.addEventListener("input", function(event){
+    let inputValue = event.target.value;
+
+    if(inputValue !== "") {
+        addressInput.classList.remove("border-red-500")
+        addressWarn.classList.add("hidden")
+    }
+})
+
+checkoutBtn.addEventListener("click", function(){
+
+         const isOpen = checkRestaurantOpen();
+         if(!isOpen){
+            alert("O restaurante está fechado no momento!🥲")
+            return;
+         }
+
+    if(cart.length === 0) return;
+    if(addressInput.value === ""){
+        addressInput.classList.add("border-red-500")
+        addressWarn.classList.remove("hidden")
+        
+        return;
+    }
+
+   const cartItems = cart.map((item) => {
+       return(
+        ` ${item.name} Quantidadr: (${item.quantity}) Preço: €${item.price} |`
+       )
+   }).join("")
+      const message = encodeURIComponent(cartItems)
+      const phone = "915568237"
+
+      window.open()
+})
+
+// verificar a hora e manipular o card do horario
+
+function checkRestaurantOpen(){
+  const data = new Date();
+  const hora = data.getHours();
+  return hora >= 10 && hora < 20; 
+
+}
+
+const spanItem = document.getElementById("date-span")
+const isOpen = checkRestaurantOpen();
+if(isOpen){
+    spanItem.classList.remove("bg-red-500");
+    spanItem.classList.add("bg-green-600")
+} else {
+    spanItem.classList.remove("bg-green-600");
+    spanItem.classList.add("bg-red-500");
 }
